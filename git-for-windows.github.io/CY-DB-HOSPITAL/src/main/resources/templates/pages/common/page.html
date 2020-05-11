@@ -1,0 +1,68 @@
+<div th:fragment="pageDiv">
+<ul class="pagination pagination-sm no-margin pull-right">
+    <li><a class="first">首页</a></li>
+	<li><a class="pre">上一页</a></li>
+	<li><a class="next">下一页</a></li>
+	<li><a class="last">尾页</a></li>
+	<li><a class="rowCount">总记录数(0)</a></li>
+	<li><a class="pageCount">总页数(0)</a></li>
+	<li><a class="pageCurrent">当前页(1)</a></li>
+</ul>
+<script type="text/javascript">
+//在pageId对应的对象上注册click时间 
+//点击其中之一  都会触发doJumpToPage函数
+ $(function(){
+	 $("#pageId").on("click",".first,.last,.pre,.next",doJumpToPage)
+ });
+  function doSetPagination(pageObject){
+	  //debugger
+	  //1.初始化总记录数
+	  $(".rowCount").html("总记录数("+pageObject.rowCount+")");
+	  //2.初始化总页数
+	  $(".pageCount").html("总页数("+pageObject.pageCount+")");
+	  //3.初始化当前页码值
+	  $(".pageCurrent").html("当前页("+pageObject.pageCurrent+")");
+	  //4.页面存贮当前页码值以及总页数(jquert中的一个数据绑定函数 有value就是储存 没有就是取)
+	  $("#pageId").data("pageCurrent",pageObject.pageCurrent);
+	  $("#pageId").data("pageCount",pageObject.pageCount);
+	  
+  }
+  function doJumpToPage(){
+
+	  //1.获得当前被点击对象的class属性
+	  //prop函数为jqurey 中操作对象属性的函数
+	  //prop的语法为 prop(key,[value])
+	  var cls=$(this).prop("class");
+	  //console.log("class",cls);
+	  //2. 基于class属性值 修改当前页码值
+	  var pageCurrent=$("#pageId").data("pageCurrent");//当前页码
+	  var pageCount= $("#pageId").data("pageCount");//总页数
+	  if(cls=="first"){
+		  pageCurrent=1;
+		  $("#checkAll").prop("checked",false);
+	  }else if(cls=="pre"&&pageCurrent>1){//上一页
+		  pageCurrent--;
+		  $("#checkAll").prop("checked",false);
+	  }else if(cls=="next"&&pageCurrent<pageCount){//下一页
+		  pageCurrent++;
+		  $("#checkAll").prop("checked",false);
+	  }else if(cls=="last"){
+		  pageCurrent=pageCount;
+		  $("#checkAll").prop("checked",false);
+	  }else{
+		  $("#checkAll").prop("checked",false);
+		  return;
+	  }
+	  //3. 基于新的页码值 执行新的查询
+	  $("#pageId").data("pageCurrent",pageCurrent);
+	  doGetObjects();
+  }
+</script>
+</div>
+
+
+
+
+
+
+

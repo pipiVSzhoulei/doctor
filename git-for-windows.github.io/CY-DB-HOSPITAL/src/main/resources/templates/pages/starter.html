@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8">	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>(*^▽^*)</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  
+  <!-- 不可删除 =================================================-->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+  <!-- 主页头部 左侧样式 ===========================================-->
+  <link rel="stylesheet" href="dist/css/AdminLTE.css">
+  <link rel="stylesheet" href="dist/css/skin-blue.css">																																															<!--  	  <link rel="stylesheet" href="bower_components/layer/skin/default/layer.css"><link rel="stylesheet" href="bower_components/ztree/css/metroStyle/metroStyle.css"/><link rel="stylesheet" href="bower_components/treegrid/jquery.treegrid.css"/>-->
+  <link rel="icon" href="img/mouse/title2.ICO">
+  <!-- 网页内容呈现 (手动添加css样式) -->
+  <style type="text/css">
+  <!-- 设置鼠标图案 -->
+html,
+body {  user-select: none;   cursor:url(img/mouse/mouse9.cur),auto;   } 
+ a{ cursor: url(img/mouse/mouse8.cur),auto;}
+.sidebar-toggle{ cursor: url(img/mouse/mouse7.cur),auto; }
+</style>		
+</head>	
+		<!-- 背景音乐  最好是mp3格式 -->
+<audio autoplay="autoplay" loop="loop"><source src="sao/bgm/daBeiZhou.mp3"></audio>
+<!-- 主体部分 -->
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+<header class="main-header">
+
+
+<!-- 左上角图片部分 -->
+<a class="logo"><!-- 左上角图片logo（里里里里里里里里里里里里里里里里里里里里里里里里里里里里里里里里里里）-->
+				<span class="logo-mini" ><img src="dist/img/jiang/biaotou5.jpg" width="50px"  height="60px"></span>
+		 		<!-- 左上角图片logo（表表表表表表表表表表表表表表表表表表表表表表表表表表表表表表表表表） -->
+				<span class="logo-lg" ><img src="dist/img/jiang/biaotou1.jpg" width="280px"  height="60px"></span>	</a>                             <nav class="navbar navbar-static-top" role="navigation"><a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button"><span class="sr-only"></span>		</a><div class="navbar-custom-menu"><ul class="nav navbar-nav"><li class="dropdown messages-menu"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope-o"></i><span class="label label-success"></span></a>
+ 
+ 
+            <ul class="dropdown-menu">
+             <li class="header doctorA">我的医师</li><li><ul class="menu"> <li><a href="#"><div class="pull-left">
+                        <!-- 上方邮件小图标 =========================== -->
+             <img src="dist/img/user/weidenglu.jpg" class="img-circle" alt="User Image"></div>
+ 			 <h4 class="usernameA">    </h4>
+             <p class="noteA">诊断细节....</p></a></li></ul></li>
+             <li class="footer">咨询师建议：暂无.....</li></ul></li>
+          
+          			<li class="dropdown user user-menu">
+       				<!-- 右上角 图片显示===============-->
+            		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              				<img src="dist/img/user/weidenglu.jpg" class="user-image" alt="User Image">
+              				<span class="hidden-xs" id="loginUserId"><font class="usernames usernameA" id="usernames">[[${username}]]</font></span>   </a>       <ul class="dropdown-menu">
+              		<!-- 右上角用户信息点击后的图片 ===============================-->
+              		<li class="user-header"><img src="dist/img/user/weidenglu.jpg" class="img-circle" alt="User Image">
+                	<p><font class="usernames usernameA">请登录</font><small class="phoneA">手机号码</small></p></li>
+	              	<li class="user-body">
+	                <div class="row">
+	                <div class="col-xs-4 text-center genderA"> 性别</div>
+	                <div class="col-xs-4 text-center ageA">年龄</div>
+	                <div style="display: none;" class="idid">id</div>
+	                <div class="col-xs-4 text-center">
+	                <a onclick="modify()">修改信息</a> </div></div></li>
+					<li class="user-footer">
+                	<div class="pull-left" >
+                 	<a id="sign" href="JavaScript:;" class="btn btn-default btn-flat">登录</a></div>
+                	<div class="pull-right">
+                 	<a id="cancellation"  href="doLogout" class="btn btn-default btn-sign-out">注销账号</a></div> </li>  </ul> </li>
+					 <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li> </ul> </div> </nav></header>
+  
+			      		<!--====================================================== -->
+			    		<!-- 主页左侧选择界面 -->
+			    		<div>
+			  			<aside class="main-sidebar"><section class="sidebar">
+			      		<ul class="sidebar-menu" data-widget="tree">
+			      
+				       <li class="header">吕氏心里咨询诊所</li> <li class="treeview">
+				       <a href="#">
+				       <i class="fa fa-link"></i> <span >客户功能</span></a>       
+				       <ul class="treeview-menu" ><li><a id="Id11">我的咨询师信息</a></li>
+				       							  <li><a id="Id12">所有咨询师资料</a></li>             </ul>       </li> 
+			          <li class="treeview">
+			          <a href="#">
+			          <i class="fa fa-link"></i><span>咨询师功能</span> </a>
+			          <ul class="treeview-menu">
+			          							<li><a id="Id22">我的来访者信息</a></li>
+			            						<li><a id="Id23">所有来访者报告</a></li>				</ul>			 </li>
+			          <li class="treeview">
+			          <a href="#">
+			          <i class="fa fa-link"></i><span>管理员功能</span> </a>
+			          <ul class="treeview-menu"><li><a id="Id31">来访者信息</a></li>
+			          							<li><a id="Id32">咨询师信息</a></li>
+			            						</li>				</ul>			 </li>			</ul>			</section>		</aside>    </div>
+        
+        
+  <!--====================================================== -->
+  <!-- ==================正下方主题部分内容========================= -->
+  <div class="content-wrapper"><section class="content-header"></section>
+  <section id="mainContentId" class="content container-fluid">
+  	<div id="whart"></div>
+  	<div id="where"></div>
+    
+    
+    </section></div>
+
+  <footer class="main-footer">
+  <div class="pull-right hidden-xs">眉上殇是心头殇，未亡人是不良人</div>
+  <strong>为梦想而生</strong>
+  </footer>
+
+  <div class="control-sidebar-bg"></div><!-- 右侧长短 -->
+  
+  
+</div>
+<!-- Modal -->
+
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="dist/js/adminlte.js"></script>
+<script type="text/javascript">
+	function xx(a,b,c,d){
+		$(".treeview").on("click","#"+a+",#"+b+",#"+c+",#"+d, function(){
+			alert("权限不足   请充值");
+			 window.open("/dist/img/user/qian.png");
+			//document.getElementById("<%=Image1.ClientID%>").οnclick=function(){window.open(this.href)};
+			//window.οnlοad=pageinit;
+				});
+	}
+	$(function(){
+		var usernames=$("#usernames").html();
+		$.getJSON("root",{"username":usernames,"url":url},function(result){
+			if(result==1){
+				doLoadUI("Id11","edit");//对应客户功能个人信息路径
+				doLoadUI("Id12","list");//对应客户功能咨询师资料路径
+				xx("Id22","Id23","Id31","Id32");
+			}else if(result==2){
+				<!-- 对应咨询师功能路径=====================-->
+				doLoadUI("Id22","goDocsPat");//对应咨询师功能自身来访者路径
+				doLoadUI("Id23","goRepoList");//对应咨询师功能来访者报告路径
+			}else if(result==3){
+				<!-- 对应管理员功能路径=====================-->
+				doLoadUI("Id12","list");//对应客户功能咨询师资料路径
+				doLoadUI("Id23","goRepoList");//对应咨询师功能来访者报告路径
+				doLoadUI("Id31","userListRoot");//对应管理员功能来访者信息路径
+				doLoadUI("Id32","doctorListRoot");//对应管理员功能咨询师信息路径
+				xx("Id11","Id22","Id11","Id22");
+			}else{
+				alert("发生意料之外的错误");
+			}
+		});
+	 	$("#where").load("sao1");
+ 		$("#whart").load("sao2");
+		<!-- 登录注销的点击事件 =====================-->
+		$(".user-footer").on("click",".btn-flat,.btn-sign-out",doLoginObject);
+		<!-- 根据登录用户在右上角显示个人信息 =====================-->
+		var url="account/account";
+		var usernames=$("#usernames").html();
+		var params={"username":usernames}
+		$.getJSON(url,params,function(result){
+			if(result.state==1){
+				$("#sign").html("已登录")
+				doSetByUsername(result.data);
+			}else{
+				alert(result.message);
+				$("#mainContentId").load("doLoginUI");
+			}
+		});
+	});
+	<!-- 加载右上角用户个人信息 =================== -->
+	function doSetByUsername(data){
+		console.log(data);
+		$(".idid").html(data.id);
+		$(".usernameA").html(data.name);
+		$(".ageA").html(data.age);
+		$(".genderA").html(data.gender);
+		$(".phoneA").html(data.phone);
+		$(".note").html(data.note);
+		if(!data.phone)$(".phoneA").html("110_110110");
+		if(!data.noteA)$(".noteA").html("该用户还没有具体诊断细节.....");
+		//获取我的医师信息
+		var url="account/loginLn";
+    	var username=$("#usernames").html();
+    	var params={"username":username	};
+    	$.getJSON(url,params,function(result){
+    		if(result.state==1){
+    			$(".doctorA").html("我的咨询医师是：      "+result.data.name);
+    		}else{
+    			alert(result.message);
+    		}
+    	});
+    	//退出操作设置doLogout
+	}
+	<!-- 异步加载主界面中心 =================== -->
+	function doLoadUI(id,url){
+		$("#"+id).click(function(){
+			$("#mainContentId").load(url);
+		});
+	}
+	<!-- 登录注销的点击事件 =====================--><!--index.html-->
+	function doLoginObject(){
+		if($("#sign").html()!="已登录"){
+			if($(this).hasClass("btn-flat")){
+				$("#mainContentId").load("page/index");
+		}else if($(this).hasClass("btn-sign-out")){
+			}
+		}
+	}
+	<!-- 修改个人信息 =====================--><!--user.html-->
+	function modify(){
+		$("#mainContentId").load("page/user");
+	}
+	<!-- 一些骚东西 ===================== -->
+	function sao(){
+		$("#mainContentId").append("<img  src='sao/img/库洛牌/库洛牌.jpg' height='650px'  width='1330px'/>");
+		$("#where").html(" ");
+	}
+	
+</script>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>GBC1910</title>
+<link href="SignIn/css/style.css" rel="stylesheet" type="text/css"
+	media="all" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="SignIn/js/jquery.min.js"></script>
+</head>
+<body>
+	<!-- contact-form -->
+	<div class="message warning" style="width:400px">
+		<div class="inset">
+			<div class="login-head">
+				<h1>Login Form</h1>
+				<div class="alert-close"></div>
+			</div>
+			<form>
+				<li><input id="username" type="text" class="text"
+					value="Username" onfocus="this.value = '';"
+					onblur="if (this.value == '') {this.value = 'Username';}"><a
+					href="#" class=" icon userr"></a></li>
+				<div class="clear"></div>
+				<li><input id="password" type="password" value="Password"
+					onfocus="this.value = '';"
+					onblur="if (this.value == '') {this.value = 'Password';}">
+					<a href="#" class="icon lock"></a></li>
+				<div class="clear"></div>
+				<div class="submit">
+					<input type="submit" onclick="login()" value="登录">
+					<h4>
+						<a href="#" onclick="registe()">没有账号?点这里注册账号!</a>
+					</h4>
+					<div class="clear"></div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="clear"></div>
+	<div class="footer">
+		<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+			Copyright &copy; 2020.1.13</p>
+	</div>
+
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="dist/js/adminlte.js"></script>
+	<script type="text/javascript">
+		function login(){
+			var url="account/login";
+			var username=$("#username").val();
+			var password=$("#password").val();
+			var params={
+					"username":username,
+					"password":password
+			}
+			$.getJSON(url,params,function(result){
+				  if(result.state==1){
+					//跳转到indexUI对应的页面
+					location.href="starter?username="+username;
+					 // window.location.replace("starter?username="+username+"&password="+password);
+				  }else{
+					alert(result.message); 
+				  }
+			  });
+		}
+		function registe(){
+			alert("后续再议");	
+		}
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

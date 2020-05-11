@@ -1,0 +1,176 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">报告管理</h3>
+				<div class="box-tools">
+					<div class="input-group input-group-sm" style="width: 350px;">
+						<input type="text" name="table_search" id="searchNameId"
+							class="form-control pull-right" placeholder="角色名">
+
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-default btn-search">
+                                <i class="fa fa-search"></i>
+							</button>
+							<button type="button" class="btn btn-default btn-add">添加</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body table-responsive no-padding">
+				<form>
+				  <table class="table table-hover">
+					<thead>
+						<tr>
+							<th>姓名</th>							
+							<th>诊断</th>
+							<th>首访时间</th>
+							<th>最后访问时间</th>
+						
+						</tr>
+					</thead>
+					<tbody id="tbodyId">
+					</tbody>
+				  </table>
+				</form>
+			</div>
+			<!-- /.box-body -->
+			<div id="pageId" class="box-footer clearfix">
+            </div>
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="dist/js/adminlte.js"></script>
+<script type="text/javascript">
+   $(function(){   
+	  $("#pageId").load("doPageUI",function(){
+		  doGetObjects();
+	  });
+	  $(".input-group-btn")
+	  .on("click",".btn-search",doQueryObjects)
+	  .on("click",".btn-add",doLoadEditUI)
+	  $("#tbodyId")
+	  .on("click",".btn-update",doLoadEditUI) 
+   });
+   function doLoadEditUI(){
+	   var title;
+	   if($(this).hasClass('btn-add')){
+		   title="添加报告";
+		   doLoadPageUI(title);
+	   }else{
+		   title="修改报告"
+		   var id=$(this).parents("tr").data("id");
+		   var params={"id":id};
+		   var url="goRepo/doFindObjectById";
+		   
+		   $.getJSON(url,params,function(result){
+			   if(result.state==1){
+				  result.data.id=id;//在结果中动态追加id
+				  $("#mainContentId").data("data",result.data);
+				  doLoadPageUI(title);//异步加载页面  
+			   }else{
+				  alert(result.message); 
+			   }
+		   });
+	   }
+   }
+   function doLoadPageUI(title){
+	   var url="repoDoctor/repo_edit"
+	   $("#mainContentId")
+	   .load(url,function(){
+		   $(".box-title").html(title);
+	   })
+   }
+  
+	
+   function doQueryObjects(){
+	   $("#pageId").data("pageCurrent",1);
+	   doGetObjects();
+   }
+   function doGetObjects(){
+	   
+	   //1.params
+	   //获取在Page.html中绑定的当前页码值
+	   var pageCurrent=$("#pageId").data("pageCurrent");
+	   //假如没有值,设置初始值为1
+	   if(!pageCurrent)pageCurrent=1;
+	   //var params="pageCurrent="+pageCurrent;
+	   var params={"pageCurrent":pageCurrent};
+	   //获取查询时用户输入的名字
+	   var name=$("#searchNameId").val();
+	   if(name)params.name=name;
+	   //2.url
+	   var url="goRepo/doFindPageObjects";
+	   //3.ajax request
+	   console.log(params);
+	   $.getJSON(url,params,function(result){
+		   doHandleResponseResult(result);
+	   });
+	   
+	   
+   }
+   function doHandleResponseResult(result){
+	   
+	   if(result.state==1){
+		  doSetTableBodyRows(result.data.records);
+		  doSetPagination(result.data);//page.html
+	   }else{
+		  doSetTableBodyErrors(result.message);
+	   }
+   }
+   function doSetTableBodyErrors(message){
+	   //获取body对象并清空
+	   var tBody=$("#tbodyId");
+	   tBody.empty();
+	   //创建tr对象
+	   var tr=$("<tr></tr>");
+	   //创建td对象
+	   //var len=$("table thead").find("tr").find("th").length;
+	   var len=$("table th").length;
+	   var td=$("<td></td>");
+	   td.prop("colspan",len);
+	   td.append(message);
+	   tr.append(td);
+	   //将tr追加到tbody
+	   tBody.append(tr);
+	   
+	   //姜：业务查询失败报错时：初始化分页信息
+	   //初始化总记录数
+	   $(".rowCount").html("总记录数(0)");
+	   //初始化总页数
+	   $(".pageCount").html("总页数(0)");
+	   //初始化当前页码值
+	   $(".pageCurrent").html("当前页(1)");
+   }
+   function doSetTableBodyRows(records){
+	   
+	  //获取tbody对象,并清空
+	   var tBody=$("#tbodyId");
+	   tBody.empty();
+	   //2.迭代数据,并追加到tBody
+	   for(var i in records){
+		  //2.1构建tr对象
+		  var tr=$("<tr></tr>");
+		  tr.data("id",records[i].id);
+		  //2.2构建tds对象
+		  var tds=doCreateTds(records[i],i);
+		  //2.3将tds对象追加到tr中
+		  tr.append(tds);
+		  //2.4将tr追加到tbody中
+		  tBody.append(tr);
+	   }
+   }
+   function doCreateTds(row,i){
+	   var tds=
+	   "<td>"+row.name+"</td>"+
+       "<td>"+row.ending+"</td>"+
+       "<td>"+new Date(row.startTime).toLocaleString()+"</td>"+
+       "<td>"+new Date(row.endTime).toLocaleString()+"</td>"+
+       "<td><a class='btn-update'>修改病例</a></td>";
+       return tds;
+   }
+</script>

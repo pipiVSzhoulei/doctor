@@ -1,0 +1,177 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">来访者管理</h3><!-- 表格上边区域 -->
+				<div class="box-tools">
+					<div class="input-group input-group-sm" style="width: 350px;">
+						<input type="text" name="table_search" id="searchNameId"
+							class="form-control pull-right" placeholder="来访者姓名">
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-default btn-search">
+                                <a class="fa fa-search">搜索来访者</a>
+							</button>
+							<button type="button" class="btn btn-default btn-add">添加来访者</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 表格主体区域 -->
+			<div class="box-body table-responsive no-padding">
+				<form>
+				  <table class="table table-hover">
+					<thead>
+						<tr>
+							<th>来访者姓名</th>
+							<th>性别</th>
+							<th>年龄</th>
+							<th>电话</th>
+							<th>备注</th>
+							<th>第一次来访时间</th>
+							<th>所属医生</th>
+						</tr>
+					</thead>
+					<p hidden id="p">hello, world!</p>
+					<tbody id="tbodyId">
+					</tbody>
+				  </table>
+				</form>
+			</div>
+			<!-- /.box-body -->
+			<div id="pageId" class="box-footer clearfix">
+            </div>
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+<script type="text/javascript">
+   $(function(){   
+	  $("#pageId").load("doPageUI",function(){
+		  doGetObjects();//显示分页信息
+	  });
+	  $(".input-group-btn")//注册点击事件
+	  .on("click",".btn-search",doQueryObjects)
+	  .on("click",".btn-add",doLoadEditUI)
+	  $("#tbodyId")
+	  .on("click",".btn-delete",doDeleteObject)
+	  .on("click",".btn-update",doLoadEditUI) 
+   });
+   function doLoadEditUI(){//添加/修改功能跳转
+	   var title;
+	   if($(this).hasClass('btn-add')){
+		   title="添加来访者信息";
+		   doLoadPageUI(title);
+	   }else{
+		   title="修改来访者信息"
+		   var id=$(this).parents("tr").data("id");//获取当前行的id
+		   var params={"id":id};
+				  doLoadPageUI(title,params);
+				  
+			   
+		 
+	   }
+   }
+   function doLoadPageUI(title,params){//跳转至添加/修改页面
+	   var url="userEdit"
+	   $("#mainContentId")
+	   .load(url,params,function(){
+		   $(".box-title").html(title);
+	   });
+   }
+   function doDeleteObject(){//删除操作
+	   var id=$(this).parents("tr").data("id");//获取当前行的id
+	   var params={"id":id};
+	   var url="patient/doDeletePatients"//执行删除操作
+	   $.post(url,params,function(result){
+		   if(result.state==1){
+			   alert(result.message);
+			   doGetObjects();
+		   }else{
+			   alert(result.message);
+		   }
+	   });
+   }
+   function doQueryObjects(){
+	   $("#pageId").data("pageCurrent",1);
+	   doGetObjects();
+   }
+   function doGetObjects(){//显示分页信息
+	   var pageCurrent=$("#pageId").data("pageCurrent");//获取在Page.html中绑定的当前页码值
+	   if(!pageCurrent)pageCurrent=1;//假如没有值,设置初始值为1
+	   var params={"pageCurrent":pageCurrent};
+	   var name=$("#searchNameId").val();//获取查询时用户输入的名字
+	   if(name)params.name=name;
+	   var url="patient/doFindPageObjects";//获取分页信息
+	   $.getJSON(url,params,function(result){
+		   doHandleResponseResult(result);
+	   });
+   }
+   function doHandleResponseResult(result){
+	   if(result.state==1){
+		  doSetTableBodyRows(result.data.records);
+		  doSetPagination(result.data);//呈现分页
+	   }else{
+		  doSetTableBodyErrors(result.message);
+	   }
+   }
+   function doSetTableBodyErrors(message){
+	   //获取body对象并清空
+	   var tBody=$("#tbodyId");
+	   tBody.empty();
+	   //创建tr对象
+	   var tr=$("<tr></tr>");
+	   //创建td对象
+	   var len=$("table th").length;
+	   var td=$("<td></td>");
+	   td.prop("colspan",len);
+	   td.append(message);
+	   tr.append(td);
+	   //将tr追加到tbody
+	   tBody.append(tr);
+	   
+	   
+	 //姜：业务查询失败报错时：初始化分页信息
+	   //初始化总记录数
+	   $(".rowCount").html("总记录数(0)");
+	   //初始化总页数
+	   $(".pageCount").html("总页数(0)");
+	   //初始化当前页码值
+	   $(".pageCurrent").html("当前页(1)");
+   }
+   function doSetTableBodyRows(records){//显示表格内容
+	  //获取tbody对象,并清空
+	   var tBody=$("#tbodyId");
+	   tBody.empty();
+	   //2.迭代数据,并追加到tBody
+	   for(var i in records){
+		  //2.1构建tr对象
+		  var tr=$("<tr></tr>");
+		  tr.data("id",records[i].id);
+		  //2.2构建tds对象
+		  var tds=doCreateTds(records[i],i);
+		  //2.3将tds对象追加到tr中
+		  tr.append(tds);
+		  //2.4将tr追加到tbody中
+		  tBody.append(tr);
+	   }
+   }
+   
+   function doCreateTds(row,i){//循环输出表格内容
+
+
+	   var tds=
+	   "<td>"+row.name+"</td>"+
+       "<td>"+row.gender+"</td>"+
+       "<td>"+row.age+"</td>"+
+       "<td>"+row.phone+"</td>"+
+       "<td>"+row.note+"</td>"+
+       "<td>"+new Date(row.firstTime)+"</td>"+
+       "<td>"+row.doctorName+"</td>"+
+       "<td><a class='btn-delete'>删除</a>"+
+       "&nbsp;   <a class='btn-update'>修改</a></td>";
+       return tds;
+		
+	   
+   }
+
+</script>

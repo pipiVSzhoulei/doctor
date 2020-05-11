@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.cy.dao.PatientRootDao">
+	  <sql id="queryScope">
+  	from patient
+  	<where>
+  		<if test="name!=null and name!=''">
+  			name like concat("%",#{name},"%")
+  		</if>
+  	</where>
+  </sql>
+  <!-- 查询总记录数 -->
+	<select id="getRowCount" resultType="int">
+        	select count(*) 
+        	<include refid="queryScope"/>
+	</select>
+	<!-- 呈现来访者页面 ，查询来访者信息-->
+	<select id="findPageObjects" resultType="com.cy.pojo.PatInfo">
+    	select id,name,gender,age,phone,note,firstTime,parentId
+    	<include refid="queryScope"/> order by id limit #{startIndex},#{pageSize}
+	</select>
+	<!-- <select id="findPatInfo" resultType="com.cy.pojo.PatInfo">
+  	select * <include refid="queryScope"/>
+  </select> -->
+  
+  <!-- 删除 -->
+  <delete id="deletePatients">
+   delete from patient where id=#{id}
+  </delete>
+  	<!-- 增加 -->
+	 <insert id="insertPatient" parameterType="com.cy.pojo.PatInfo"
+	 useGeneratedKeys="true" keyProperty="id" >
+		insert into patient (id,name,gender,age,phone,note,firstTime,parentId) values(null,#{name},#{gender},#{age},#{phone},#{note},now(),#{parentId})
+	</insert> 
+	
+	<!-- 修改 -->
+	<update id="updatePatient" parameterType="com.cy.pojo.PatInfo">
+		update patient set name=#{name},gender=#{gender},age=#{age},phone=#{phone},note=#{note},parentId=#{parentId} where id=#{id}
+	</update>
+	<!-- 修改时呈现来访者信息-->
+	<select id="findObjectById" resultType="com.cy.pojo.PatInfo">
+    	select id,name,gender,age,phone,note,firstTime,parentId from patient where id=#{id}        
+	</select>
+	<!-- 搜索来访者信息 -->
+	<select id="findObjectByName" resultType="com.cy.pojo.PatInfo">
+           select id,name,gender,age,phone,note,firstTime,parentId from patient where name=#{name}        
+	</select>
+
+</mapper>

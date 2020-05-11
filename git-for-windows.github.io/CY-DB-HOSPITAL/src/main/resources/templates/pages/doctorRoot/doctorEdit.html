@@ -1,0 +1,169 @@
+<!-- 添加页面 -->
+ <div class="box box-info">
+      <div class="box-header with-border">
+        <h3 class="box-title">添加医师信息</h3>
+      </div>
+      <!-- /.box-header -->
+      <!-- form start -->
+      <form class="form-horizontal">
+        <!-- <div class="box-body">
+          <div class="form-group">
+            <label for="nameId" class="col-sm-2 control-label">名称</label>
+
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="name" id="nameId" placeholder="名称">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="noteId" class="col-sm-2 control-label">描述</label>
+
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="note" id="noteId" placeholder="描述">
+            </div>
+          </div>
+          <div class="form-group">
+				<label class="col-sm-2 control-label">授权</label>
+				<div class="col-sm-10">
+						<ul id="menuTree" class="ztree"></ul>
+				</div>
+		  </div>
+        </div> -->
+        <div class="box-body">
+          <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">姓名</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="name" placeholder="名称">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="gender" class="col-sm-2 control-label">性别</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="gender" placeholder="性别">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="age" class="col-sm-2 control-label">年龄</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="age" placeholder="年龄">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="education" class="col-sm-2 control-label">学历</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="education" placeholder="学历">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="workTime" class="col-sm-2 control-label">工龄</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="workTime" placeholder="医龄">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="charge" class="col-sm-2 control-label">收费标准</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="charge" placeholder="收费标准">
+            </div>
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+          <button type="button" class="btn btn-default btn-cancel">取消</button>
+          <button type="button" class="btn btn-info pull-right btn-save">保存</button>
+        </div>
+        <!-- /.box-footer -->
+      </form>
+    </div>
+<script type="text/javascript">
+    $(function(){
+    	//异步加载菜单信息,初始化页面菜单
+    	$(".box-footer")
+    	.on("click",".btn-save",doSaveOrUpdate)
+    	.on("click",".btn-cancel",doCancel);
+    	doFindObjectById();
+    });
+    function doSaveOrUpdate(){
+    	var params=doGetEditFormData();
+    	if(!params.name.trim()){
+    		alert("医师姓名不能为空");
+    		return;
+    	}
+    	if(!params.gender.trim()){
+    		alert("请选择医师性别")
+    		return;
+    	}
+    	if(!params.age.trim()){
+    		alert("医师年龄不能为空")
+    		return;
+    	}
+    	if(!params.education.trim()){
+    		alert("医师学历不能为空")
+    		return;
+    	}
+    	if(!params.workTime.trim()){
+    		alert("工龄不能为空")
+    		return;
+    	}
+    	if(!params.charge.trim()){
+    		alert("医师收费不能为空")
+    		return;
+    	}
+    	var data=$("#mainContentId").data("data");
+    	if(data){
+    		params.id=data.id;
+    	}
+    	//2.url
+    	var insertUrl="doctor/doInsertObject";
+    	var updateUrl="doctor/doUpdateObject";
+    	var url=data?updateUrl:insertUrl;
+    	//3.ajax request
+    	$.post(url,params,function(result){
+    		if(result.state==1){
+    		   alert(result.message);
+    		   doCancel();
+    		}else{
+    		   alert(result.message);
+    		}
+    	});
+    }
+    function doGetEditFormData(){//添加功能
+    	//获取医师信息
+    	var params={
+    		name:$("#name").val(),
+    		gender:$("#gender").val(),
+    		age:$("#age").val(),
+    		education:$("#education").val(),
+    		workTime:$("#workTime").val(),
+    		charge:$("#charge").val()
+    	}
+    	return params;
+    }
+    function doCancel(){//取消按钮
+    	var url="doctorList";
+    	$("#mainContentId")
+    	.load(url,function(){
+    	  $("#mainContentId").removeData();
+    	});
+    }
+    function doFindObjectById(){//修改时呈现医师信息
+    	var url="doctor/doFindObjectById"
+    	$.getJSON(url,function(result){
+    	 if(result.state==1){
+    		var rowData=$("#mainContentId").data("data");
+    	    if(rowData)
+    	    	doInitEditFormData(rowData);
+    	 }else{
+    		alert(result.message);
+    	 }
+    });
+}
+    function doInitEditFormData(data){//修改时初始化医师信息
+    	console.log("data",data);
+    	$("#name").val(data.name);
+    	$("#gender").val(data.gender);
+    	$("#age").val(data.age);
+    	$("#education").val(data.education);
+    	$("#workTime").val(data.workTime);
+    	$("#charge").val(data.charge);
+    }
+</script>

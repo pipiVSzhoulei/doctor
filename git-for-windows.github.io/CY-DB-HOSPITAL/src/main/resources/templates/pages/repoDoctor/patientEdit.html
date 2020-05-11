@@ -1,0 +1,186 @@
+<!-- 添加页面 -->
+ <div class="box box-info">
+      <div class="box-header with-border">
+        <h3 class="box-title">添加来访者信息</h3>
+      </div>
+      <!-- /.box-header -->
+      <!-- form start -->
+      <form class="form-horizontal">
+        <!-- <div class="box-body">
+          <div class="form-group">
+            <label for="nameId" class="col-sm-2 control-label">名称</label>
+
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="name" id="nameId" placeholder="名称">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="noteId" class="col-sm-2 control-label">描述</label>
+
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="note" id="noteId" placeholder="描述">
+            </div>
+          </div>
+          <div class="form-group">
+				<label class="col-sm-2 control-label">授权</label>
+				<div class="col-sm-10">
+						<ul id="menuTree" class="ztree"></ul>
+				</div>
+		  </div>
+        </div> -->
+       
+        <div class="box-body">
+          <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">姓名</label>
+            <div class="col-sm-10">
+             <input type="hidden" th:value="${idd}" id="staff_name2"/>
+              <input type="text" class="form-control"  id="name" placeholder="名称">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="gender" class="col-sm-2 control-label">性别</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="gender" placeholder="性别">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="age" class="col-sm-2 control-label">年龄</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="age" placeholder="年龄">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="phone" class="col-sm-2 control-label">电话</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="phone" placeholder="电话">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="note" class="col-sm-2 control-label">备注</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="note" placeholder="备注">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="firstTime" class="col-sm-2 control-label">首访时间</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="firstTime" placeholder="首访时间">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="parentId" class="col-sm-2 control-label">所属医生</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"  id="parentId" placeholder="所属医生">
+            </div>
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+          <button type="button" class="btn btn-default btn-cancel">取消</button>
+          <button type="button" class="btn btn-info pull-right btn-save">保存</button>
+        </div>
+        <!-- /.box-footer -->
+      </form>
+    </div>
+<script type="text/javascript">
+    $(function(){
+    	
+    	//异步加载菜单信息,初始化页面菜单
+    	$(".box-footer")
+    	.on("click",".btn-save",doSaveOrUpdate)
+    	.on("click",".btn-cancel",doCancel);
+    	var id=$("#staff_name2").val();
+    	if(id)
+    	doFindObjectById();
+    });
+    function doSaveOrUpdate(data){
+    	var params=doGetEditFormData();
+    	if(!params.name.trim()){
+    		alert("来访者姓名不能为空");
+    		return;
+    	}
+    	if(!params.gender.trim()){
+    		alert("请选择来访者性别")
+    		return;
+    	}
+    	if(!params.age.trim()){
+    		alert("来访者年龄不能为空")
+    		return;
+    	}
+    	if(!params.phone.trim()){
+    		alert("来访者电话不能为空")
+    		return;
+    	}
+    	
+    	if(!params.parentId.trim()){
+    		alert("来访者所属医生不能为空")
+    		return;
+    	}
+    	var id=$("#staff_name2").val();
+    	
+    	
+    	/* if(data){
+    		params.id=data.id;
+    	} */
+    	
+    	
+    	//2.url
+    	var insertUrl="patient/doInsertPatients";
+    	var updateUrl="patient/doUpdatePatients";
+    	var url=id?updateUrl:insertUrl;
+    	//3.ajax request
+    	$.post(url,params,function(result){
+    		if(result.state==1){
+    		   alert(result.message);
+    		   doCancel();
+    		}else{
+    		   alert(result.message);
+    		}
+    	});
+    }
+    function doGetEditFormData(){//添加功能
+    	//获取来访者信息
+    	
+    	var params={
+    		id:$("#staff_name2").val(),
+    		name:$("#name").val(),
+    		gender:$("#gender").val(),
+    		age:$("#age").val(),
+    		phone:$("#phone").val(),
+    		note:$("#note").val(),
+    		firstTime:new Date($("#firstTime").val()),
+    		parentId:$("#parentId").val()
+    	}
+    	return params;
+    }
+    function doCancel(){//取消按钮
+    	var url="goDocsPat";
+    	$("#mainContentId")
+    	.load(url,function(){
+    	  $("#mainContentId").removeData();
+    	});
+    }
+    function doFindObjectById(){//修改时呈现来访者信息
+    	var url="patient/doFindObjectById"
+    	var id=$("#staff_name2").val();
+    	var params={"id":id};
+    	$.getJSON(url,params,function(result){
+    	 console.log(result);
+    	 if(result.state==1){
+    		doInitEditFormData(result.data);
+    	 }else{
+    		alert(result.message);
+    	 }
+    });
+}
+    function doInitEditFormData(data){//修改时初始化来访者信息
+    	console.log("data",data);
+    	$("#name").val(data.name);
+    	$("#gender").val(data.gender);
+    	$("#age").val(data.age);
+    	$("#phone").val(data.phone);
+    	$("#note").val(data.note);
+    	$("#firstTime").val(data.firstTime);
+    	$("#parentId").val(data.parentId);
+    }
+</script>

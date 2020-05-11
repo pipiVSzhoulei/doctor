@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.dao.DoctorRootDao">
+	
+	<sql id="queryWhereId">
+		<where>
+			<if test="name!=null and name!=''">
+            	name like concat("%",#{name},"%")
+            </if>
+        </where>
+    </sql>
+    <!-- 查询总记录数 -->
+	<select id="getRowCount" resultType="int">
+        	select count(*) from doctor
+        	<include refid="queryWhereId"/>
+	</select>
+	<!-- 呈现医师页面 ，查询医师信息-->
+	<select id="findPageObjects" resultType="com.cy.pojo.Doctor">
+    	select id,name,gender,age,education,workTime,charge from doctor 
+    	<include refid="queryWhereId"/> order by id limit #{startIndex},#{pageSize}
+	</select>
+	<!-- 删除医师信息 -->
+	<delete id="deleteObjectsById">
+		delete from doctor where id =#{id}
+	</delete>
+	<!-- 添加医师信息 -->
+	<insert id="insertObject" parameterType="com.cy.pojo.Doctor" useGeneratedKeys="true" keyProperty="id">
+        insert into doctor (id,name,gender,age,education,workTime,charge) values(null,#{name},#{gender},#{age},#{education},#{workTime},#{charge})
+	</insert>
+	<!-- 修改医师信息 -->
+	<update id="updateObject" parameterType="com.cy.pojo.Doctor">  
+    	update doctor set name=#{name},gender=#{gender},age=#{age},education=#{education},workTime=#{workTime},charge=#{charge} where id=#{id}
+	</update>
+	<!-- 修改时呈现医师信息-->
+	<select id="findObjectById" resultType="com.cy.pojo.Doctor">
+    	select id,name,gender,age,education,workTime,charge from doctor where id=#{id}        
+	</select>
+	<!-- 搜索医师信息 -->
+	<select id="findObjectByName" resultType="com.cy.pojo.Doctor">
+           select id,name,gender,age,education,workTime,charge from doctor where name=#{name}        
+	</select>
+  
+</mapper>

@@ -1,0 +1,156 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">医师管理</h3><!-- 表格上边区域 -->
+				<div class="box-tools">
+					<div class="input-group input-group-sm" style="width: 350px;">
+						<input type="text" name="table_search" id="searchNameId"
+							class="form-control pull-right" placeholder="医师姓名">
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-default btn-search">
+                                <a class="fa fa-search" onclick="doGetObjects()">搜索医师</a></button></div></div></div></div>
+			<!-- 表格主体区域 -->
+			<div class="box-body table-responsive no-padding">
+				<form>
+				  <table class="table table-hover">
+					<thead><tr>
+						    <th>医师序号</th>
+							<th>医师姓名</th>
+							<th>性别</th>
+							<th>年龄</th>
+							<th>学历</th>
+							<th>医龄</th>
+							<th>收费标准</th>
+							<th>操作</th></tr></thead>
+					<tbody id="tbodyId">
+					</tbody> </table></form></div>
+			<!-- /.box-body -->
+			<div id="pageId" class="box-footer clearfix">
+            </div>
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="dist/js/adminlte.js"></script>
+<script type="text/javascript">
+   $(function(){   
+	  $("#pageId").load("doPageUI",function(){
+		  doGetObjects();//显示分页信息
+	  });
+   });
+	//查询所有医师内容  并配置好分页信息
+   function doGetObjects(){
+	   //初始化分页信息  
+	   var pageCurrent=$("#pageId").data("pageCurrent");//获取初始或者现在的 页码值
+	   if(!pageCurrent)pageCurrent=1;					//假如没有值,设置初始值为1
+	   var params={"pageCurrent":pageCurrent};//把当前页码值 存入params参数 带入到后台中
+	   var name=$("#searchNameId").val();//获取查询时用户输入的名字（没有输入则查询全部内容 如果输入则根据输入内容进行模糊查询）
+	   if(name)params.name=name;		 //如果name有值  就把这个值传入params参数中传到后台
+	   var url="patient/doFindObjects";	 //查询信息 分配分页信息
+	   $.getJSON(url,params,function(result){
+		   doHandleResponseResult(result);//对结果进行处理
+	   });
+   }
+	
+   function doHandleResponseResult(result){
+	   if(result.state==1){
+		  doSetTableBodyRows(result.data.records);
+		  doSetPagination(result.data);//调用分页（page.html）中的函数 实现参数的位置
+	   }else{
+		  alert(result.message);//如果state！=1（也就是说执行失败） 弹出错误提示
+		  doSetTableBodyErrors(result.message);//清空内容 输出错误 并且初始化页面
+	   }
+   }
+   function doSetTableBodyErrors(message){
+	   //获取body对象并清空
+	   var tBody=$("#tbodyId");
+	   tBody.empty();
+	   //创建tr对象
+	   var tr=$("<tr></tr>");
+	   //创建td对象
+	   var len=$("table th").length;
+	   var td=$("<td></td>");
+	   td.prop("colspan",len);
+	   td.append(message);
+	   tr.append(td);
+	   //将tr追加到tbody
+	   tBody.append(tr);
+
+	   //业务查询失败报错时：初始化分页信息
+	   //初始化总记录数
+	   $(".rowCount").html("总记录数(0)");
+	   //初始化总页数
+	   $(".pageCount").html("总页数(0)");
+	   //初始化当前页码值
+	   $(".pageCurrent").html("当前页(1)");
+   }
+   function doSetTableBodyRows(records){//显示表格内容
+	  //获取tbody对象,并清空
+	   var tBody=$("#tbodyId");
+	   tBody.empty();
+	   //2.迭代数据,并追加到tBody
+	   for(var i in records){
+		  //2.1构建tr对象
+		  var tr=$("<tr></tr>");
+		  tr.data("id",records[i].id);
+		  //2.2构建tds对象
+		  var tds=doCreateTds(records[i],i);
+		  //2.3将tds对象追加到tr中
+		  tr.append(tds);
+		  //2.4将tr追加到tbody中
+		  tBody.append(tr);
+	   }
+   }
+   
+   function doCreateTds(row,i){//循环输出表格内容
+	   var tds=
+       "<td>"+(parseInt(i)+1)+"</td>"+ 
+	   "<td>"+row.name+"</td>"+
+       "<td>"+row.gender+"</td>"+
+       "<td>"+row.age+"</td>"+
+       "<td>"+row.education+"</td>"+
+       "<td>"+row.workTime+"</td>"+
+       "<td>"+row.charge+"</td>"+
+       "<td><a class='btn-update' onclick='doUpdateObject("+row.id+")'>更改他为我的医师</a></td>";
+       return tds;
+   }
+   function doUpdateObject(id){
+	   var url="patient/doUpdateObject";
+	   var parentId=$(".idid").html();
+	   var params={
+			   "parentId":id,
+			   "id":parentId
+	   }
+	   $.getJSON(url,params,function(result){
+		   if(result.state==1){
+			   alert(result.message);
+			   $("#mainContentId").load("edit");
+		   }else{
+			   alert(result.message);
+		   }
+	   });
+   
+   }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

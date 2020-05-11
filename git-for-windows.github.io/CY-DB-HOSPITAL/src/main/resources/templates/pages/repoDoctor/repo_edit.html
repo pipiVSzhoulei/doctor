@@ -1,0 +1,113 @@
+<!-- Horizontal Form -->
+<div class="box box-info">
+	<div class="box-header with-border">
+		<h3 class="box-title">添加报告</h3>
+	</div>
+	<!-- /.box-header -->
+	<!-- form start -->
+	<form class="form-horizontal">
+		<div class="box-body">
+			<div class="form-group">
+				<label for="nameId" class="col-sm-2 control-label">名称</label>
+
+				<div class="col-sm-10">
+					<input type="text" class="form-control" name="name" id="nameId"
+						placeholder="名称">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="endingId" class="col-sm-2 control-label">诊断</label>
+
+				<div class="col-sm-10">
+					<input type="text" class="form-control" name="ending" id="endingId"
+						placeholder="诊断">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="noteId" class="col-sm-2 control-label">描述</label>
+
+				<div class="col-sm-10">
+					<textarea rows="6" cols="40" style="OVERFLOW: hidden"
+						class="form-control" name="note" id="noteId" placeholder="描述"></textarea>
+
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="docnameId" class="col-sm-2 control-label">医师</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" name="docname" id="docnameId"
+						placeholder="咨询师">
+				</div>
+			</div>
+		</div>
+		<!-- /.box-body -->
+		<div class="box-footer">
+			<button type="button" class="btn btn-default btn-cancel">Cancel</button>
+			<button type="button" class="btn btn-info pull-right btn-save">Save</button>
+		</div>
+		<!-- /.box-footer -->
+	</form>
+</div>
+<script type="text/javascript">
+    
+    $(function(){
+    	
+    	doInitEditFormData();
+    	//异步加载菜单信息,初始化页面菜单
+    	$(".box-footer")
+    	.on("click",".btn-save",doSaveOrUpdate)
+    	.on("click",".btn-cancel",doCancel);
+    	
+    });
+    function doSaveOrUpdate(){
+    
+    	var params=doGetEditFormData();
+    	if(!params.name.trim()){
+    		alert("姓名不能为空");
+    		return;
+    	}
+    	var rowData=$("#mainContentId").data("data");
+    	if(rowData){params.id=rowData.id;}
+    	//2.url
+    	var insertUrl="goRepo/doInsertObject";
+    	var updateUrl="goRepo/doUpdateObject";
+    	var url=params.id?updateUrl:insertUrl;
+    	//3.ajax request
+    	$.post(url,params,function(result){
+    		if(result.state==1){
+    		   alert(result.message);
+    		   doCancel();
+    		}else{
+    		   alert(result.message);
+    		}
+    	})
+    }
+
+    function doGetEditFormData(){
+    	var params={
+    		name:$("#nameId").val(),
+    		ending:$("#endingId").val(),
+    		note:$("#noteId").val(),
+    		docname:$("#docnameId").val()
+    	}
+    	return params;
+}
+    function doCancel(){
+    	var url="goRepoList";
+    	$("#mainContentId")
+    	.load(url,function(){
+    	  $("#mainContentId").removeData();
+    	});
+    }
+
+function doInitEditFormData(){
+	 var data=$("#mainContentId").data("data");
+     if(!data)return;
+	console.log("data",data);
+	$("#nameId").val(data.name);
+	$("#endingId").val(data.ending);
+	$("#noteId").val(data.note);
+	$("#docnameId").val(data.docname);
+}
+</script>

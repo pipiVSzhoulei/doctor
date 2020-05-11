@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.dao.RepoDao">
+    
+   
+
+    <!-- 通过sql元素定义sql共性代码,其它地方用到了使用include进行包含 -->
+    <sql id="queryWhereId">
+          from cases
+          <where>
+             <if test="name!=null and name!=''">
+                name like concat("%",#{name},"%")
+             </if>
+          </where>   
+    </sql>
+    <!-- 基于用户名,动态拼接sql实现数据查询 -->
+    <select id="getRowCount" resultType="int">
+          select count(*)
+          <include refid="queryWhereId"/>    
+    </select>
+    <!-- 基于查询条件查询当前页记录 -->
+    <select id="findPageObjects"
+            resultType="com.cy.pojo.Repo">
+           select *
+           <include refid="queryWhereId"/>    
+           limit #{startIndex},#{pageSize} 
+    </select>
+   
+    <insert id="insertObject" parameterType="com.cy.pojo.Repo" useGeneratedKeys="true" keyProperty="id">
+        insert into cases 
+        (id,name,ending,startTime,endTime,note) 
+        values
+        (null,#{name},#{ending},now(),now(),#{note})
+	</insert>
+	<!-- 修改报告信息 -->
+	<update id="updateObject" parameterType="com.cy.pojo.Repo">  
+    	update cases set 
+    	name=#{name},ending=#{ending},
+    	endTime=now(),note=#{note}
+    	where id=#{id}
+	</update>
+	
+	<select id="findObjectById" resultType="com.cy.pojo.Repo">
+    	select * from cases where id=#{id}        
+	</select>
+    	<select id="findObjectByIdd" resultType="com.cy.pojo.Repo">
+    	select * from cases where name=#{name}        
+	</select>
+    
+</mapper>
+
+
+
